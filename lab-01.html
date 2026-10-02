@@ -503,20 +503,30 @@ visitors in 2022?</em></p>
 <h3>Exercise f.</h3>
 <p><em>How many attractions had between 50,000 and 100,000 visitors in
 2022?</em></p>
-<pre class="r"><code>#visitors %&gt;% 
-#  ____(
-#    ______,
-#    ______ ) %&gt;%
-#  count()</code></pre>
+<pre class="r"><code>visitors %&gt;% 
+  filter(
+    n_2022 &gt;= 50000,
+    n_2022 &lt;= 100000) %&gt;%
+  count()</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##       n
+##   &lt;int&gt;
+## 1    50</code></pre>
 </div>
 <div id="exercise-g." class="section level3">
 <h3>Exercise g.</h3>
 <p><em>How many regions have more than 50 tourist attraction in the data
 set? (Hint: You will need to tabulate the data before
 filtering.)</em></p>
-<pre class="r"><code>#visitors %&gt;% 
-#  _____(region) %&gt;%
-#  filter(______)</code></pre>
+<pre class="r"><code>count_region &lt;- visitors |&gt; 
+  count(region) |&gt; 
+  filter(n &gt; 50) 
+  
+count_region</code></pre>
+<pre><code>## # A tibble: 1 × 2
+##   region       n
+##   &lt;chr&gt;    &lt;int&gt;
+## 1 Scotland    97</code></pre>
 </div>
 </div>
 </div>
@@ -539,18 +549,23 @@ attractions?</em></p>
 <h3>Exercise h.</h3>
 <p><em>Perform the same calculation for the 2021 admissions
 data.</em></p>
-<pre class="r"><code>#visitors %&gt;% 
-#  ______(
-#    __________,
-#    __________
-#  )</code></pre>
+<pre class="r"><code>visitors %&gt;% 
+  summarise(
+    mean_2021 = mean(n_2021, na.rm = TRUE),
+   med_2021 = median(n_2021, na.rm = TRUE)
+  )</code></pre>
+<pre><code>## # A tibble: 1 × 2
+##   mean_2021 med_2021
+##       &lt;dbl&gt;    &lt;dbl&gt;
+## 1   232431.   129829</code></pre>
 <p>All values in the output are <code>NA</code>!</p>
 </div>
 <div id="exercise-i." class="section level3">
 <h3>Exercise i.</h3>
 <p><em>What does <code>NA</code> stand for and why are you getting this
 as your answer to the previous question.</em></p>
-<p><strong>Write your answer here</strong></p>
+<p>Not available, ie there is no information on how many tourists
+arrived in 2021</p>
 </div>
 <div id="exercise-j." class="section level3">
 <h3>Exercise j.</h3>
@@ -558,7 +573,8 @@ as your answer to the previous question.</em></p>
 <code>median()</code> commands to see what the input argument
 <code>na.rm</code> does. Edit your code from exercise h so that it
 computes the summary statistics where data is available.</em></p>
-<p><strong>Write your answer here</strong></p>
+<p>Removes all NA values so mean function is not trying to be applied to
+non-numeric data types.</p>
 </div>
 </div>
 <div id="question-7" class="section level2">
@@ -582,18 +598,23 @@ visitor numbers in 2022?</em></p>
 <p><em>Observe in question 6 that the mean statistics across all
 settings are much larger than the corresponding median statistics.
 Discuss in your group what this suggests about the data.</em></p>
-<p><strong>Write your answer here</strong></p>
+<p>Data is skewed by several very large outliers, increasing mean but
+median attraction is much lower</p>
 </div>
 </div>
 <div id="question-8" class="section level2">
 <h2>Question 8</h2>
 <div id="exercise-l." class="section level3">
 <h3>Exercise l.</h3>
-<pre class="r"><code>#visitors %&gt;% 
-#  summarise(
-#     __________,
-#     __________,
-#  )</code></pre>
+<pre class="r"><code>visitors %&gt;% 
+  summarise(
+     max_2021 = max(n_2021, na.rm = TRUE),
+     min_2021 = min(n_2021, na.rm = TRUE)
+  )</code></pre>
+<pre><code>## # A tibble: 1 × 2
+##   max_2021 min_2021
+##      &lt;dbl&gt;    &lt;dbl&gt;
+## 1  5400000     1052</code></pre>
 </div>
 </div>
 <div id="question-9" class="section level2">
@@ -628,8 +649,15 @@ visitors_with_nations %&gt;%
 <p><em>How many tourist attractions are there in each of the 4 nations?
 From this, discuss in your group how reliable you think the
 inter-quartile estimates are.</em></p>
-<pre class="r"><code>#________ %&gt;%
-#  ______(_______)</code></pre>
+<pre class="r"><code>visitors_with_nations %&gt;%
+  count(nation)</code></pre>
+<pre><code>## # A tibble: 4 × 2
+##   nation               n
+##   &lt;chr&gt;            &lt;int&gt;
+## 1 England            240
+## 2 Northern Ireland     9
+## 3 Scotland            97
+## 4 Wales                2</code></pre>
 </div>
 </div>
 </div>
@@ -639,7 +667,16 @@ inter-quartile estimates are.</em></p>
 <h3>Exercise n.</h3>
 <p><em>Within each of the 4 nations, what is the proportion of tourist
 attractions that have free admission for all visitors?</em></p>
-<pre class="r"><code># Write your code here</code></pre>
+<pre class="r"><code>visitors_with_nations |&gt; 
+  group_by(nation) |&gt; 
+  summarise(percentage_free = mean(admission == &quot;Free&quot;) * 100)</code></pre>
+<pre><code>## # A tibble: 4 × 2
+##   nation           percentage_free
+##   &lt;chr&gt;                      &lt;dbl&gt;
+## 1 England                     38.8
+## 2 Northern Ireland            11.1
+## 3 Scotland                    35.1
+## 4 Wales                        0</code></pre>
 </div>
 <div id="exercise-o." class="section level3">
 <h3>Exercise o.</h3>
@@ -647,7 +684,21 @@ attractions that have free admission for all visitors?</em></p>
 to 2022. Of the tourist attractions in Scotland, sort into increasing
 numerical order the types of admission charges based on the mean
 percentage change in visitor numbers.</em></p>
-<pre class="r"><code># Write your code here</code></pre>
+<pre class="r"><code>total_visitors_nations &lt;- visitors_with_nations 
+total_visitors_nations |&gt; 
+  group_by(nation) |&gt; 
+  summarise( sum_of_visitors_2021 = sum(n_2021, na.rm = TRUE),
+             sum_of_visitors_2022 = sum(n_2022, na.rm = TRUE)
+             ) |&gt; 
+  mutate( total_change = (sum_of_visitors_2022 - sum_of_visitors_2021)) |&gt; 
+  mutate( pct_change = (total_change / sum_of_visitors_2021) * 100 )</code></pre>
+<pre><code>## # A tibble: 4 × 5
+##   nation       sum_of_visitors_2021 sum_of_visitors_2022 total_change pct_change
+##   &lt;chr&gt;                       &lt;dbl&gt;                &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;
+## 1 England                  56624281            103925135     47300854       83.5
+## 2 Northern Ir…               904608              1984996      1080388      119. 
+## 3 Scotland                  7034922             16231815      9196893      131. 
+## 4 Wales                      284363               333867        49504       17.4</code></pre>
 </div>
 </div>
 
