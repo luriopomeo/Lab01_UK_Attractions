@@ -11,7 +11,7 @@
 
 <meta name="author" content="Lucio Di Meo" />
 
-<meta name="date" content="2026-10-02" />
+<meta name="date" content="2026-10-05" />
 
 <title>Lab 01 - UK Attractions</title>
 
@@ -352,7 +352,7 @@ display: none;
 
 <h1 class="title toc-ignore">Lab 01 - UK Attractions</h1>
 <h4 class="author">Lucio Di Meo</h4>
-<h4 class="date">2026-10-02</h4>
+<h4 class="date">2026-10-05</h4>
 
 </div>
 
@@ -686,19 +686,23 @@ numerical order the types of admission charges based on the mean
 percentage change in visitor numbers.</em></p>
 <pre class="r"><code>total_visitors_nations &lt;- visitors_with_nations 
 total_visitors_nations |&gt; 
-  group_by(nation) |&gt; 
-  summarise( sum_of_visitors_2021 = sum(n_2021, na.rm = TRUE),
-             sum_of_visitors_2022 = sum(n_2022, na.rm = TRUE)
-             ) |&gt; 
-  mutate( total_change = (sum_of_visitors_2022 - sum_of_visitors_2021)) |&gt; 
-  mutate( pct_change = (total_change / sum_of_visitors_2021) * 100 )</code></pre>
-<pre><code>## # A tibble: 4 × 5
-##   nation       sum_of_visitors_2021 sum_of_visitors_2022 total_change pct_change
-##   &lt;chr&gt;                       &lt;dbl&gt;                &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;
-## 1 England                  56624281            103925135     47300854       83.5
-## 2 Northern Ir…               904608              1984996      1080388      119. 
-## 3 Scotland                  7034922             16231815      9196893      131. 
-## 4 Wales                      284363               333867        49504       17.4</code></pre>
+  filter( nation == &quot;Scotland&quot;) |&gt; 
+  group_by( admission ) |&gt; 
+  summarise( sum_num_visitors_2021 = sum(n_2021, na.rm = TRUE), 
+             sum_num_visitors_2022 = sum(n_2022, na.rm = TRUE)) |&gt; 
+  mutate( sum_total_change = (sum_num_visitors_2022 
+                               - sum_num_visitors_2021)) |&gt; 
+  mutate( pct_change = (sum_total_change / sum_num_visitors_2021) * 100 ) |&gt; 
+  arrange(pct_change) |&gt; 
+  mutate( sum_num_visitors_2021 = NULL, sum_num_visitors_2022 = NULL,
+          sum_total_change = NULL)</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##   admission pct_change
+##   &lt;chr&gt;          &lt;dbl&gt;
+## 1 Members         74.1
+## 2 Free           178. 
+## 3 Charged        318.</code></pre>
+<p>HORRAYYYYYYYY</p>
 </div>
 </div>
 

@@ -267,13 +267,19 @@ visitors_with_nations |>
 
 total_visitors_nations <- visitors_with_nations 
 total_visitors_nations |> 
-  group_by(nation) |> 
-  summarise( sum_of_visitors_2021 = sum(n_2021, na.rm = TRUE),
-             sum_of_visitors_2022 = sum(n_2022, na.rm = TRUE)
-             ) |> 
-  mutate( total_change = (sum_of_visitors_2022 - sum_of_visitors_2021)) |> 
-  mutate( pct_change = (total_change / sum_of_visitors_2021) * 100 )
-                      
-  
-  
+  filter( nation == "Scotland") |> 
+  group_by( admission ) |> 
+  summarise( sum_num_visitors_2021 = sum(n_2021, na.rm = TRUE), 
+             sum_num_visitors_2022 = sum(n_2022, na.rm = TRUE)) |> 
+  mutate( sum_total_change = (sum_num_visitors_2022 
+                               - sum_num_visitors_2021)) |> 
+  mutate( pct_change = (sum_total_change / sum_num_visitors_2021) * 100 ) |> 
+  arrange(pct_change) |> 
+  mutate( sum_num_visitors_2021 = NULL, sum_num_visitors_2022 = NULL,
+          sum_total_change = NULL)
+
+
 ```
+
+HORRAYYYYYYYY
+
